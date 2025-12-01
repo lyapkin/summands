@@ -21,6 +21,7 @@ import (
 const ROWS = 1000000
 const BATCH = 1000000
 const SHEETS = 5
+const SUMMANDS_N = 15
 
 func main() {
 	app := app.NewWithID("fund_summands_of_given_sum")
@@ -34,7 +35,7 @@ func main() {
 	}
 	curPath := filepath.Dir(ex)
 	log.Print(curPath)
-	
+
 	sumLabel := widget.NewLabel("Введите сумму")
 	sumInput := newNumericalEntry()
 	sumInput.Validator = func(val string) error {
@@ -52,8 +53,8 @@ func main() {
 		if num <= 0 {
 			return errors.New("число должно быть больше чем 0")
 		}
-		if num > 7 {
-			return errors.New("число должно быть НЕ больше чем 7")
+		if num > SUMMANDS_N {
+			return errors.New(fmt.Sprintf("число должно быть НЕ больше чем %d", SUMMANDS_N))
 		}
 		return nil
 	}
@@ -105,7 +106,7 @@ func main() {
 
 		go func() {
 			comb := NewCombs(sum, num, ub, curPath, func(val int) {
-				fyne.Do(func() {progressText.SetText(fmt.Sprintf("Найдено комбинаций: %v", val))})
+				fyne.Do(func() { progressText.SetText(fmt.Sprintf("Найдено комбинаций: %v", val)) })
 			})
 			start := time.Now()
 			_, numCombs := comb.FindCombs()
@@ -151,8 +152,6 @@ func main() {
 		updateBtnState()
 	}
 
-	
-	
 	pathContainer := container.New(layout.NewBorderLayout(nil, nil, nil, pathPicker), pathPicker, pathLabel)
 
 	inputContainer := container.New(layout.NewVBoxLayout(),
@@ -169,10 +168,10 @@ func main() {
 		),
 		btn,
 	)
-	
+
 	window.SetContent(content)
 	window.ShowAndRun()
-	
+
 }
 
 type numericalEntry struct {
